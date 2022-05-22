@@ -30,6 +30,8 @@ def main():
         # draw on frame
         if detector.IsDrawing():
             detector.Draw(frame)
+        else:
+            ShowInfo(frame)
         
         # display frame
         cv.imshow('pointer', frame)
@@ -40,6 +42,11 @@ def main():
                 
     cap.release()
     cv.destroyAllWindows()
+
+
+def ShowInfo(frame):
+    info_text = "double click to turn on draw mode, esc to quit"
+    cv.putText(frame, info_text, (200, 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 0))
 
 if __name__ == "__main__":
     main()
