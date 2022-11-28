@@ -34,4 +34,3 @@ class Hand:
         self.processed_hand = self.hand.process(frame_rgb)        
         self.multi_landmarks = self.processed_hand.multi_hand_landmarks
         self.hand_detected = self.multi_landmarks
-        self.threeD_landmarks = self.processed_hand.multi_hand_world_landmarks

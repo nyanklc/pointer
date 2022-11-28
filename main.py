@@ -1,52 +1,41 @@
 import cv2 as cv
 import detector as det
+import stream_getter as stream_get
+import stream_viewer as stream_view
+import time
+
+VIDEO_SOURCE = 'http://nyn_cam:Means1122@192.168.1.92:8080/video'
+VIEW_MODE = False
 
 def main():
-    # start capture
-    cap = cv.VideoCapture(0)
-    retrieved, frame = cap.read()
-    if not cap.isOpened():
-        print("Cannot open camera")
-        exit()
-
-    # init objects
+    
+    stream_getter = stream_get.StreamGetter(VIDEO_SOURCE)
+    stream_getter.startStream()
     detector = det.Detector()
-
-    # callbacks on window "pointer"
-    cv.namedWindow('pointer')
-    cv.setMouseCallback('pointer', detector.ToggleDraw)
+    if VIEW_MODE:
+        stream_viewer = stream_view.StreamViewer(stream_getter.getFrame())
+        stream_viewer.startView()
 
     while True:
-        # get frame
-        retrieved, frame = cap.read()
-        if not retrieved:
-            print("Can't receive frame. Exiting ...")
+        if VIEW_MODE:
+            if stream_viewer.isStopped():
+                break
+
+        frame = stream_getter.getFrame()
+        if not stream_getter.getRetrieved():
+            print("Can't retrieve frame. Exiting...")
             break
-        frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        
-        # find features on frame
-        detector.Find(frame_rgb)
-        
-        # draw on frame
-        if detector.IsDrawing():
+
+        detector.Find(frame)
+        if VIEW_MODE:
             detector.Draw(frame)
-        else:
-            ShowInfo(frame)
-        
-        # display frame
-        cv.imshow('pointer', frame)
+            stream_viewer.setFrame(frame)
 
-        # esc: quit program
-        if cv.waitKey(2) == 27:
-            break
-                
-    cap.release()
-    cv.destroyAllWindows()
+    if VIEW_MODE:
+        stream_viewer.endView()
+    stream_getter.endStream()
 
 
-def ShowInfo(frame):
-    info_text = "double click to turn on draw mode, esc to quit"
-    cv.putText(frame, info_text, (200, 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 0))
 
 if __name__ == "__main__":
     main()
