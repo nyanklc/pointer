@@ -16,6 +16,12 @@ def main():
         stream_viewer = stream_view.StreamViewer(stream_getter.getFrame())
         stream_viewer.startView()
 
+    # used to record the time when we processed last frame
+    prev_frame_time = 0
+    
+    # used to record the time at which we processed current frame
+    new_frame_time = 0
+
     while True:
         if VIEW_MODE:
             if stream_viewer.isStopped():
@@ -25,11 +31,16 @@ def main():
         if not stream_getter.getRetrieved():
             print("Can't retrieve frame. Exiting...")
             break
+        
+        new_frame_time = time.time()
 
-        detector.Find(frame)
+        detector.find(frame)
         if VIEW_MODE:
-            detector.Draw(frame)
+            detector.draw(frame)
             stream_viewer.setFrame(frame)
+
+        print(1/(new_frame_time-prev_frame_time))
+        prev_frame_time = new_frame_time
 
     if VIEW_MODE:
         stream_viewer.endView()
