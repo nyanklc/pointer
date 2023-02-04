@@ -1,6 +1,6 @@
 # pointer
-discontinued ofc. I think I've modified this a bit later on for means project.
-a hobby project to get a better understanding of computer vision concepts
+- a hobby project to get a better understanding of computer vision concepts
+- discontinued ofc. I think I've modified this a bit later on for means project.
 
 # dependencies
 mediapipe 0.8.10
